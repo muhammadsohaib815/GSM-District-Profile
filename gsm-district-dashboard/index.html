@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive demonstration dashboard for Greenstar Social Marketing district indicators, 2017–2026.">
+  <title>GSM District Profile 2017–2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Roboto+Condensed:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#dashboardMain">Skip to dashboard</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-lockup" aria-label="Greenstar Social Marketing">
+        <img class="brand-logo" src="assets/images/greenstar.png" alt="Greenstar — health, prosperity, future">
+      </div>
+      <div class="title-block">
+        <p>District intelligence dashboard</p>
+        <h1>GSM District Profile <span>2017–2026</span></h1>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn mobile-filter-btn" id="mobileFilterBtn" type="button" aria-controls="filterPanel" aria-expanded="false">
+          <i data-lucide="sliders-horizontal"></i><span>Filters</span>
+        </button>
+        <button class="reset-btn" id="resetFilters" type="button"><i data-lucide="rotate-ccw"></i><span>Reset filters</span></button>
+      </div>
+    </header>
+
+    <div class="dashboard-layout">
+      <main id="dashboardMain" class="dashboard-main">
+        <section class="kpi-grid" aria-label="Key performance indicators">
+          <article class="kpi-group demographics">
+            <div class="group-heading"><i data-lucide="users"></i><h2>Demographics</h2></div>
+            <div class="kpi-items">
+              <div class="kpi-item featured"><span>Population</span><strong data-kpi="population">—</strong><small>Est. 2023</small></div>
+              <div class="kpi-item"><span>Est. Population</span><strong data-kpi="population2026">—</strong><small>2026 projection</small></div>
+              <div class="kpi-item"><span>MWRA</span><strong data-kpi="mwra">—</strong><small>2026 estimate</small></div>
+              <div class="kpi-item"><span>mCPR</span><strong data-kpi="mcpr">—</strong><small>2023 rate</small></div>
+            </div>
+          </article>
+
+          <article class="kpi-group cyps">
+            <div class="group-heading"><i data-lucide="activity"></i><h2>CYPs</h2></div>
+            <div class="kpi-items">
+              <div class="kpi-item featured"><span>Total CYP</span><strong data-kpi="totalCyp">—</strong><small>Couple-years</small></div>
+              <div class="kpi-item"><span>Condom</span><strong data-kpi="cypCondom">—</strong><small>CYP</small></div>
+              <div class="kpi-item"><span>Pills</span><strong data-kpi="cypPills">—</strong><small>CYP</small></div>
+              <div class="kpi-item"><span>IUD</span><strong data-kpi="cypIud">—</strong><small>CYP</small></div>
+              <div class="kpi-item"><span>Injectables</span><strong data-kpi="cypInjectables">—</strong><small>CYP</small></div>
+            </div>
+          </article>
+
+          <article class="kpi-group universe">
+            <div class="group-heading"><i data-lucide="network"></i><h2>GSM Universe</h2></div>
+            <div class="kpi-items">
+              <div class="kpi-item featured"><span>Total Network</span><strong data-kpi="totalNetwork">—</strong><small>Service points</small></div>
+              <div class="kpi-item"><span>Providers</span><strong data-kpi="providers">—</strong><small>Clinical</small></div>
+              <div class="kpi-item"><span>Chemists</span><strong data-kpi="chemists">—</strong><small>Retail</small></div>
+              <div class="kpi-item"><span>Outlets</span><strong data-kpi="outlets">—</strong><small>Community</small></div>
+              <div class="kpi-item"><span>Other cadres</span><strong data-kpi="otherCadres">—</strong><small>Hakeem · DHM · Nurse</small></div>
+            </div>
+          </article>
+
+          <article class="kpi-group services">
+            <div class="group-heading"><i data-lucide="heart-pulse"></i><h2>Provider Services</h2></div>
+            <div class="kpi-items">
+              <div class="kpi-item featured"><span>FP Clients</span><strong data-kpi="fpClients">—</strong><small>10-year total</small></div>
+              <div class="kpi-item"><span>IUD Insertions</span><strong data-kpi="iudInsertions">—</strong><small>Services</small></div>
+              <div class="kpi-item"><span>MVA</span><strong data-kpi="mva">—</strong><small>Services</small></div>
+              <div class="kpi-item"><span>PAC / FP</span><strong data-kpi="pacfp">—</strong><small>Services</small></div>
+              <div class="kpi-item"><span>Deliveries</span><strong data-kpi="deliveries">—</strong><small>Services</small></div>
+            </div>
+          </article>
+
+          <article class="kpi-group health-impact">
+            <div class="group-heading"><i data-lucide="shield-plus"></i><h2>Health Impact</h2></div>
+            <div class="kpi-items">
+              <div class="kpi-item featured"><span>Pregnancies Averted</span><strong data-kpi="pregnanciesAverted">—</strong><small>Estimated impact</small></div>
+              <div class="kpi-item"><span>Maternal Deaths Averted</span><strong data-kpi="maternalDeathsAverted">—</strong><small>Estimated impact</small></div>
+              <div class="kpi-item"><span>Child Deaths Averted</span><strong data-kpi="childDeathsAverted">—</strong><small>Estimated impact</small></div>
+              <div class="kpi-item"><span>Abortions Averted</span><strong data-kpi="abortionsAverted">—</strong><small>Estimated impact</small></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="insights-grid" aria-label="Charts and map">
+          <article class="panel sales-panel">
+            <div class="panel-heading">
+              <div><span class="eyebrow">10-year performance</span><h2>Gross Sales Value</h2></div>
+              <span class="panel-unit">PKR · millions</span>
+            </div>
+            <div class="chart-wrap chart-wide"><canvas id="salesChart" role="img" aria-label="Annual gross sales bar chart"></canvas></div>
+          </article>
+
+          <article class="panel map-panel">
+            <div class="panel-heading map-heading">
+              <div><span class="eyebrow">Geographic coverage</span><h2>GSM Presence in Pakistan</h2></div>
+              <div class="map-count"><strong id="mapLocationCount">0</strong><span>demo locations</span></div>
+            </div>
+            <div id="pakistanMap" aria-label="Interactive map of demonstration GSM locations in Pakistan"></div>
+            <div class="map-legend"><span><i></i> Demonstration location</span><small>District centroid offsets — not provider addresses</small></div>
+          </article>
+
+          <article class="panel donut-panel fp-panel">
+            <div class="panel-heading compact"><div><span class="eyebrow">Method mix</span><h2>FP Users</h2></div><strong data-summary="totalFpUsers">—</strong></div>
+            <div class="chart-wrap"><canvas id="fpUsersChart" role="img" aria-label="Family planning users doughnut chart"></canvas></div>
+            <div class="custom-legend" id="fpLegend"></div>
+          </article>
+
+          <article class="panel donut-panel beneficiaries-panel">
+            <div class="panel-heading compact"><div><span class="eyebrow">People reached</span><h2>Beneficiaries</h2></div><strong data-summary="annualBeneficiaries">—</strong></div>
+            <div class="chart-wrap"><canvas id="beneficiariesChart" role="img" aria-label="Beneficiaries doughnut chart"></canvas></div>
+            <div class="custom-legend" id="beneficiaryLegend"></div>
+          </article>
+        </section>
+
+        <section class="summary-section" aria-labelledby="summaryTitle">
+          <div class="section-title"><div><span class="eyebrow">At a glance</span><h2 id="summaryTitle">10-Year Programme Summary</h2></div><span id="lastUpdated">Mock data · 2017–2026</span></div>
+          <div class="summary-grid">
+            <article class="summary-card emerald"><i data-lucide="badge-dollar-sign"></i><span>Avg Annual Gross Sales</span><strong data-summary="avgSales">—</strong><small>PKR</small></article>
+            <article class="summary-card orange"><i data-lucide="hand-heart"></i><span>Avg Annual Beneficiaries</span><strong data-summary="annualBeneficiaries">—</strong><small>people</small></article>
+            <article class="summary-card navy"><i data-lucide="users-round"></i><span>Total FP Users</span><strong data-summary="totalFpUsers">—</strong><small>users</small></article>
+            <article class="summary-card sky"><i data-lucide="shield-check"></i><span>Condom Users</span><strong data-summary="condomUsers">—</strong><small>users</small></article>
+            <article class="summary-card violet"><i data-lucide="circle-dot"></i><span>IUD Users</span><strong data-summary="iudUsers">—</strong><small>users</small></article>
+            <article class="summary-card indigo"><i data-lucide="pill"></i><span>Pills Users</span><strong data-summary="pillsUsers">—</strong><small>users</small></article>
+            <article class="summary-card coral"><i data-lucide="syringe"></i><span>Injectable Users</span><strong data-summary="injectableUsers">—</strong><small>users</small></article>
+            <article class="summary-card rose"><i data-lucide="clipboard-plus"></i><span>MWRA Registration (IPC)</span><strong data-summary="mwraRegistrations">—</strong><small>registrations</small></article>
+            <article class="summary-card teal"><i data-lucide="lungs"></i><span>Total TB Patients</span><strong data-summary="tbPatients">—</strong><small>patients</small></article>
+          </div>
+        </section>
+      </main>
+
+      <aside class="filter-panel" id="filterPanel" aria-label="Dashboard filters">
+        <div class="filter-header">
+          <div><span class="eyebrow">Refine view</span><h2>Filters</h2></div>
+          <button class="close-filter" id="closeFilter" type="button" aria-label="Close filters"><i data-lucide="x"></i></button>
+        </div>
+
+        <section class="filter-section">
+          <div class="filter-title"><label>Province</label><span id="provinceCount">All</span></div>
+          <div id="provinceFilters" class="province-list" role="radiogroup" aria-label="Province selection"></div>
+        </section>
+
+        <section class="filter-section district-section">
+          <div class="filter-title"><label for="districtSearch">Districts</label><span id="districtCount">All</span></div>
+          <div class="search-box"><i data-lucide="search"></i><input id="districtSearch" type="search" placeholder="Search districts" autocomplete="off"></div>
+          <div id="districtFilters" class="district-list" role="radiogroup" aria-label="District selection"></div>
+        </section>
+
+        <div class="filter-footer">
+          <div class="active-filter-copy"><strong id="visibleDistricts">0</strong><span>districts in view</span></div>
+          <button id="applyMobileFilters" class="apply-btn" type="button">View dashboard</button>
+        </div>
+      </aside>
+      <div class="filter-backdrop" id="filterBackdrop"></div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-brand">
+        <div class="footer-partners" id="footerPartners" aria-live="polite">KFW | LAD | FCDO | GF | BMGF | USAID | Packard | PPIF | Other</div>
+        <div class="footer-brand-copy"><strong>Greenstar Social Marketing</strong><span>Health · Prosperity · Future</span></div>
+      </div>
+      <div class="footer-stats"><span>GSM presence</span><strong id="footerDistrictCount">— districts</strong></div>
+      <div class="footer-meta"><span>Prepared by: <strong>MIS</strong></span><small>Frontend demonstration · No live patient or provider data</small></div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="js/mockData.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
