@@ -5,10 +5,6 @@
   const fpColors = ['#188fec', '#162f88', '#ef6d2f', '#df455a', '#a33ba1', '#6f59ad'];
   const beneficiaryColors = ['#188fec', '#153985', '#ef6d2f', '#6c48a8', '#e54e76', '#11a0a1'];
 
-  function compactNumber(value) {
-    return new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
-  }
-
   function createLegend(containerId, labels, values, colors) {
     const total = values.reduce((sum, value) => sum + value, 0) || 1;
     document.getElementById(containerId).innerHTML = labels.map((label, index) =>
@@ -58,23 +54,6 @@
     Chart.defaults.font.family = 'Inter, Arial, sans-serif';
     Chart.defaults.color = '#64748b';
 
-    charts.sales = new Chart(document.getElementById('salesChart'), {
-      type: 'bar',
-      data: { labels: window.GSM_DATA.years, datasets: [{ label: 'Gross sales', data: [], backgroundColor: '#dc4655', hoverBackgroundColor: '#bd3040', borderRadius: 3, borderSkipped: false }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11.5, weight: '700' } } },
-          y: { beginAtZero: true, grid: { color: '#e9eef2' }, border: { display: false }, ticks: { font: { size: 10.5, weight: '600' }, callback: value => compactNumber(value * 1000000) } }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: context => ` PKR ${(context.raw * 1000000).toLocaleString()}` } },
-          datalabels: { anchor: 'end', align: 'top', color: '#6b7280', clamp: true, font: { size: 10.5, weight: '700' }, formatter: value => compactNumber(value * 1000000) }
-        }
-      }
-    });
-
     charts.fp = new Chart(document.getElementById('fpUsersChart'), {
       type: 'doughnut', data: { labels: [], datasets: [{ data: [], backgroundColor: fpColors, borderColor: '#fff', borderWidth: 2, hoverOffset: 4 }] }, options: doughnutOptions()
     });
@@ -84,9 +63,7 @@
   }
 
   function update(metrics) {
-    if (!charts.sales) return;
-    charts.sales.data.datasets[0].data = metrics.sales.map(value => +(value / 1000000).toFixed(1));
-    charts.sales.update();
+    if (!charts.fp) return;
 
     const fpLabels = ['Condoms', 'Pills', 'IUD', 'Injectables', 'Implant', 'VSC'];
     const fpValues = [metrics.fpUsers.condom, metrics.fpUsers.pills, metrics.fpUsers.iud, metrics.fpUsers.injectables, metrics.fpUsers.implant, metrics.fpUsers.vsc];
@@ -103,5 +80,17 @@
     createLegend('beneficiaryLegend', benLabels, benValues, beneficiaryColors);
   }
 
-  window.GSM_CHARTS = { init, update };
+  function clear() {
+    if (!charts.fp) return;
+    charts.fp.data.labels = [];
+    charts.fp.data.datasets[0].data = [];
+    charts.fp.update();
+    charts.beneficiaries.data.labels = [];
+    charts.beneficiaries.data.datasets[0].data = [];
+    charts.beneficiaries.update();
+    document.getElementById('fpLegend').textContent = 'No CSV data available';
+    document.getElementById('beneficiaryLegend').textContent = 'No CSV data available';
+  }
+
+  window.GSM_CHARTS = { init, update, clear };
 })();

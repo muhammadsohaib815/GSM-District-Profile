@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Interactive demonstration dashboard for Greenstar Social Marketing district indicators, 2017–2026.">
+  <meta name="description" content="Greenstar Social Marketing district dashboard showing fields available in the TP values CSV, 2017–2026.">
   <title>GSM District Profile 2017–2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +28,6 @@
         <button class="icon-btn mobile-filter-btn" id="mobileFilterBtn" type="button" aria-controls="filterPanel" aria-expanded="false">
           <i data-lucide="sliders-horizontal"></i><span>Filters</span>
         </button>
-        <button class="reset-btn" id="resetFilters" type="button"><i data-lucide="rotate-ccw"></i><span>Reset filters</span></button>
       </div>
     </header>
 
@@ -92,19 +91,20 @@
         <section class="insights-grid" aria-label="Charts and map">
           <article class="panel sales-panel">
             <div class="panel-heading">
-              <div><span class="eyebrow">10-year performance</span><h2>Gross Sales Value</h2></div>
-              <span class="panel-unit">PKR · millions</span>
+              <div><span class="eyebrow">CSV data · 2017–2026</span><h2>TP Value</h2></div>
+              <span class="panel-unit" id="tpTotal">Loading…</span>
             </div>
-            <div class="chart-wrap chart-wide"><canvas id="salesChart" role="img" aria-label="Annual gross sales bar chart"></canvas></div>
+            <div class="chart-wrap chart-wide"><canvas id="tpChart" role="img" aria-label="Annual TP value bar chart"></canvas></div>
+            <p class="tp-status" id="tpStatus" role="status">TP values from CSV</p>
           </article>
 
           <article class="panel map-panel">
             <div class="panel-heading map-heading">
               <div><span class="eyebrow">Geographic coverage</span><h2>GSM Presence in Pakistan</h2></div>
-              <div class="map-count"><strong id="mapLocationCount">0</strong><span>demo locations</span></div>
+              <div class="map-count"><strong id="mapLocationCount">0</strong><span>CSV locations</span></div>
             </div>
-            <div id="pakistanMap" aria-label="Interactive map of demonstration GSM locations in Pakistan"></div>
-            <div class="map-legend"><span><i></i> Demonstration location</span><small>District centroid offsets — not provider addresses</small></div>
+            <div id="pakistanMap" aria-label="Interactive map of CSV locations in Pakistan"></div>
+            <div class="map-legend"><span>No location data</span><small>The CSV has no latitude or longitude fields</small></div>
           </article>
 
           <article class="panel donut-panel fp-panel">
@@ -121,7 +121,7 @@
         </section>
 
         <section class="summary-section" aria-labelledby="summaryTitle">
-          <div class="section-title"><div><span class="eyebrow">At a glance</span><h2 id="summaryTitle">10-Year Programme Summary</h2></div><span id="lastUpdated">Mock data · 2017–2026</span></div>
+          <div class="section-title"><div><span class="eyebrow">At a glance</span><h2 id="summaryTitle">10-Year Programme Summary</h2></div><span id="lastUpdated">CSV fields only · 2017–2026</span></div>
           <div class="summary-grid">
             <article class="summary-card emerald"><i data-lucide="badge-dollar-sign"></i><span>Avg Annual Gross Sales</span><strong data-summary="avgSales">—</strong><small>PKR</small></article>
             <article class="summary-card orange"><i data-lucide="hand-heart"></i><span>Avg Annual Beneficiaries</span><strong data-summary="annualBeneficiaries">—</strong><small>people</small></article>
@@ -139,7 +139,10 @@
       <aside class="filter-panel" id="filterPanel" aria-label="Dashboard filters">
         <div class="filter-header">
           <div><span class="eyebrow">Refine view</span><h2>Filters</h2></div>
-          <button class="close-filter" id="closeFilter" type="button" aria-label="Close filters"><i data-lucide="x"></i></button>
+          <div class="filter-header-actions">
+            <button class="reset-btn" id="resetFilters" type="button"><i data-lucide="rotate-ccw"></i><span>Reset</span></button>
+            <button class="close-filter" id="closeFilter" type="button" aria-label="Close filters"><i data-lucide="x"></i></button>
+          </div>
         </div>
 
         <section class="filter-section">
@@ -166,8 +169,8 @@
         <div class="footer-partners" id="footerPartners" aria-live="polite">KFW | LAD | FCDO | GF | BMGF | USAID | Packard | PPIF | Other</div>
         <div class="footer-brand-copy"><strong>Greenstar Social Marketing</strong><span>Health · Prosperity · Future</span></div>
       </div>
-      <div class="footer-stats"><span>GSM presence</span><strong id="footerDistrictCount">— districts</strong></div>
-      <div class="footer-meta"><span>Prepared by: <strong>MIS</strong></span><small>Frontend demonstration · No live patient or provider data</small></div>
+      <div class="footer-stats"><span>Districts in CSV</span><strong id="footerDistrictCount">— districts</strong></div>
+      <div class="footer-meta"><span>Prepared by: <strong>MIS</strong></span><small>Only fields available in the CSV are shown</small></div>
     </footer>
   </div>
 
@@ -176,8 +179,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
-  <script src="js/mockData.js"></script>
   <script src="js/charts.js"></script>
+  <script src="js/tpValues.js"></script>
   <script src="js/map.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/app.js"></script>

@@ -16,7 +16,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; color: var(--ink); background: #cfdadd; font-family: Inter, Arial, sans-serif; font-size: 14px; }
-button, input { font: inherit; }
+button, input, select { font: inherit; }
 button { cursor: pointer; }
 .skip-link { position: fixed; left: 10px; top: -50px; z-index: 9999; padding: 10px 14px; color: #fff; background: var(--navy); border-radius: 0 0 8px 8px; }
 .skip-link:focus { top: 0; }
@@ -65,6 +65,9 @@ button { cursor: pointer; }
 .panel-unit { padding: 4px 7px; border-radius: 5px; color: #b73d48; background: #fff0f1; font-size: 11px; font-weight: 800; }
 .chart-wrap { position: relative; height: 178px; padding: 8px 12px 2px; }
 .chart-wide { height: 232px; }
+.tp-status { margin: 0; padding: 0 10px 5px; color: #64748b; font-size: 10px; }
+.sales-panel { display: flex; flex-direction: column; }
+.sales-panel .chart-wide { flex: 1 1 auto; height: auto; min-height: 0; }
 .map-panel { grid-row: span 2; display: flex; flex-direction: column; }
 .map-heading { flex: 0 0 auto; }
 .map-count { display: flex; align-items: baseline; gap: 5px; color: var(--blue); }
@@ -99,6 +102,9 @@ button { cursor: pointer; }
 .filter-header { min-height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; color: #fff; background: linear-gradient(135deg, #103678, #164fad); }
 .filter-header .eyebrow { color: rgba(255,255,255,.7); }
 .filter-header h2 { margin: 0; font: 700 23px/1 "Roboto Condensed", Inter, sans-serif; }
+.filter-header-actions { display: flex; align-items: center; gap: 6px; }
+.filter-header .reset-btn { min-height: 32px; padding: 0 8px; color: var(--navy); background: #fff; border-color: rgba(255,255,255,.75); font-size: 12px; }
+.filter-header .reset-btn:hover { color: #fff; background: rgba(255,255,255,.16); }
 .close-filter { display: none; width: 34px; height: 34px; border: 0; border-radius: 6px; color: #fff; background: rgba(255,255,255,.12); }
 .close-filter svg { width: 17px; }
 .filter-section { padding: 13px 13px 5px; border-bottom: 1px solid #e5eaef; }
@@ -161,6 +167,7 @@ button { cursor: pointer; }
   .dashboard-layout { display: block; }
   .mobile-filter-btn { display: inline-flex; }
   .reset-btn span { display: none; }
+  .filter-header .reset-btn span { display: inline; }
   .filter-panel { position: fixed; z-index: 1100; width: min(340px, 88vw); height: 100vh; min-height: 0; top: 0; right: 0; border-radius: 14px 0 0 14px; transform: translateX(105%); transition: transform .24s ease; }
   .filter-panel.open { transform: translateX(0); }
   .close-filter, .apply-btn { display: inline-grid; place-items: center; }
