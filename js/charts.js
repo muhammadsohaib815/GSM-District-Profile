@@ -4,11 +4,18 @@
   const charts = {};
   const fpColors = ['#188fec', '#162f88', '#ef6d2f', '#df455a', '#a33ba1', '#6f59ad'];
   const beneficiaryColors = ['#188fec', '#153985', '#ef6d2f', '#6c48a8', '#e54e76', '#11a0a1'];
+  const numeric = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+  const percentLabel = (value, total) => {
+    const percent = total ? Number(value) / total * 100 : 0;
+    if (!percent) return '0%';
+    return percent < 1 ? `${percent.toFixed(2)}%` : `${Math.round(percent)}%`;
+  };
 
   function createLegend(containerId, labels, values, colors) {
-    const total = values.reduce((sum, value) => sum + value, 0) || 1;
+    const safeValues = values.map(numeric);
+    const total = safeValues.reduce((sum, value) => sum + value, 0) || 1;
     document.getElementById(containerId).innerHTML = labels.map((label, index) =>
-      `<span class="legend-item"><i style="background:${colors[index]}"></i>${label} <strong>${Math.round(values[index] / total * 100)}%</strong></span>`
+      `<span class="legend-item"><i style="background:${colors[index]}"></i>${label} <strong>${percentLabel(safeValues[index], total)}</strong></span>`
     ).join('');
   }
 
@@ -17,14 +24,16 @@
       responsive: true,
       maintainAspectRatio: false,
       cutout: '66%',
-      layout: { padding: 4 },
+      // Reserve space around the ring so percentage labels never touch the
+      // panel header or get clipped by the card's overflow boundary.
+      layout: { padding: { top: 15, right: 12, bottom: 6, left: 12 } },
       plugins: {
         legend: { display: false },
         tooltip: {
           callbacks: {
             label(context) {
               const total = context.dataset.data.reduce((sum, value) => sum + value, 0) || 1;
-              return ` ${context.label}: ${context.raw.toLocaleString()} (${Math.round(context.raw / total * 100)}%)`;
+              return ` ${context.label}: ${context.raw.toLocaleString()} (${percentLabel(context.raw, total)})`;
             }
           }
         },
@@ -66,14 +75,14 @@
     if (!charts.fp) return;
 
     const fpLabels = ['Condoms', 'Pills', 'IUD', 'Injectables', 'Implant', 'VSC'];
-    const fpValues = [metrics.fpUsers.condom, metrics.fpUsers.pills, metrics.fpUsers.iud, metrics.fpUsers.injectables, metrics.fpUsers.implant, metrics.fpUsers.vsc];
+    const fpValues = [metrics.fpUsers.condom, metrics.fpUsers.pills, metrics.fpUsers.iud, metrics.fpUsers.injectables, metrics.fpUsers.implant, metrics.fpUsers.vsc].map(numeric);
     charts.fp.data.labels = fpLabels;
     charts.fp.data.datasets[0].data = fpValues;
     charts.fp.update();
     createLegend('fpLegend', fpLabels, fpValues, fpColors);
 
     const benLabels = ['FP Clients', 'NFP Users', 'Deliveries', 'IPC', 'TB', 'Other'];
-    const benValues = [metrics.beneficiaries.fpClients, metrics.beneficiaries.nfpUsers, metrics.beneficiaries.deliveries, metrics.beneficiaries.ipc, metrics.beneficiaries.tb, metrics.beneficiaries.other];
+    const benValues = [metrics.beneficiaries.fpClients, metrics.beneficiaries.nfpUsers, metrics.beneficiaries.deliveries, metrics.beneficiaries.ipc, metrics.beneficiaries.tb, metrics.beneficiaries.other].map(numeric);
     charts.beneficiaries.data.labels = benLabels;
     charts.beneficiaries.data.datasets[0].data = benValues;
     charts.beneficiaries.update();

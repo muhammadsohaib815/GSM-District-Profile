@@ -37,8 +37,7 @@
           <article class="kpi-group demographics">
             <div class="group-heading"><i data-lucide="users"></i><h2>Demographics</h2></div>
             <div class="kpi-items">
-              <div class="kpi-item featured"><span>Population</span><strong data-kpi="population">—</strong><small>Est. 2023</small></div>
-              <div class="kpi-item"><span>Est. Population</span><strong data-kpi="population2026">—</strong><small>2026 projection</small></div>
+              <div class="kpi-item featured"><span>Population</span><strong data-kpi="population">—</strong><small>2026 estimate</small></div>
               <div class="kpi-item"><span>MWRA</span><strong data-kpi="mwra">—</strong><small>2026 estimate</small></div>
               <div class="kpi-item"><span>mCPR</span><strong data-kpi="mcpr">—</strong><small>2023 rate</small></div>
             </div>
@@ -52,17 +51,21 @@
               <div class="kpi-item"><span>Pills</span><strong data-kpi="cypPills">—</strong><small>CYP</small></div>
               <div class="kpi-item"><span>IUD</span><strong data-kpi="cypIud">—</strong><small>CYP</small></div>
               <div class="kpi-item"><span>Injectables</span><strong data-kpi="cypInjectables">—</strong><small>CYP</small></div>
+              <div class="kpi-item"><span>VSC</span><strong data-kpi="cypVsc">—</strong><small>CYP</small></div>
+              <div class="kpi-item"><span>Implant</span><strong data-kpi="cypImplant">—</strong><small>CYP</small></div>
             </div>
           </article>
 
           <article class="kpi-group universe">
             <div class="group-heading"><i data-lucide="network"></i><h2>GSM Universe</h2></div>
             <div class="kpi-items">
-              <div class="kpi-item featured"><span>Total Network</span><strong data-kpi="totalNetwork">—</strong><small>Service points</small></div>
-              <div class="kpi-item"><span>Providers</span><strong data-kpi="providers">—</strong><small>Clinical</small></div>
+              <div class="kpi-item featured"><span>Total Providers</span><strong data-kpi="providers">—</strong><small>CSV total</small></div>
               <div class="kpi-item"><span>Chemists</span><strong data-kpi="chemists">—</strong><small>Retail</small></div>
               <div class="kpi-item"><span>Outlets</span><strong data-kpi="outlets">—</strong><small>Community</small></div>
-              <div class="kpi-item"><span>Other cadres</span><strong data-kpi="otherCadres">—</strong><small>Hakeem · DHM · Nurse</small></div>
+              <div class="kpi-item"><span>MBBS</span><strong data-kpi="mbbs">—</strong><small>CSV total</small></div>
+              <div class="kpi-item"><span>LHV / CMW</span><strong data-kpi="lhvCmw">—</strong><small>CSV total</small></div>
+              <div class="kpi-item"><span>Hakeem / Homeo</span><strong data-kpi="hakeem">—</strong><small>CSV total</small></div>
+              <div class="kpi-item"><span>Nurse / Desp.</span><strong data-kpi="nurse">—</strong><small>CSV total</small></div>
             </div>
           </article>
 
@@ -91,7 +94,7 @@
         <section class="insights-grid" aria-label="Charts and map">
           <article class="panel sales-panel">
             <div class="panel-heading">
-              <div><span class="eyebrow">CSV data · 2017–2026</span><h2>TP Value</h2></div>
+              <div><span class="eyebrow">10-year performance</span><h2>TP Value</h2></div>
               <span class="panel-unit" id="tpTotal">Loading…</span>
             </div>
             <div class="chart-wrap chart-wide"><canvas id="tpChart" role="img" aria-label="Annual TP value bar chart"></canvas></div>
@@ -164,13 +167,29 @@
       <div class="filter-backdrop" id="filterBackdrop"></div>
     </div>
 
+    <div class="partner-strip" aria-label="Greenstar partners and programme supporters">
+      <span class="partner-strip-label">Partners</span>
+      <span class="partner-strip-list">KFW <b>|</b> LAD <b>|</b> FCDO <b>|</b> GF <b>|</b> BMGF <b>|</b> USAID <b>|</b> Packard <b>|</b> PPIF <b>|</b> Other</span>
+    </div>
+
     <footer class="footer">
-      <div class="footer-brand">
-        <div class="footer-partners" id="footerPartners" aria-live="polite">KFW | LAD | FCDO | GF | BMGF | USAID | Packard | PPIF | Other</div>
-        <div class="footer-brand-copy"><strong>Greenstar Social Marketing</strong><span>Health · Prosperity · Future</span></div>
+      <div class="footer-brand-lockup">
+        <div class="footer-logo-frame">
+          <img src="assets/images/greenstar.png" alt="Greenstar Social Marketing">
+        </div>
+        <div class="footer-brand-copy">
+          <strong>Greenstar Social Marketing</strong>
+          <span>Health &middot; Prosperity &middot; Future</span>
+        </div>
       </div>
-      <div class="footer-stats"><span>Districts in CSV</span><strong id="footerDistrictCount">— districts</strong></div>
-      <div class="footer-meta"><span>Prepared by: <strong>MIS</strong></span><small>Only fields available in the CSV are shown</small></div>
+      <div class="footer-data">
+        <span class="footer-label">Dashboard coverage</span>
+        <strong id="footerDistrictCount">&mdash; districts</strong>
+        <small id="footerPartners" aria-live="polite">District profile data loaded</small>
+      </div>
+      <div class="footer-meta">
+        <span>Prepared by <strong>MIS</strong></span>
+      </div>
     </footer>
   </div>
 
@@ -181,6 +200,7 @@
   <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/tpValues.js"></script>
+  <script src="js/dashboardData.js"></script>
   <script src="js/map.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/app.js"></script>

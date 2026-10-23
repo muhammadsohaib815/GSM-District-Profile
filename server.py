@@ -8,7 +8,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
-from data_loader import CSV_PATH, load_tp_values, metadata, summarize
+from data_loader import DISTRICT_CSV_PATH, CSV_PATH, district_metadata, load_district_data, load_tp_values, metadata, summarize, summarize_district_data
 
 
 ROOT = Path(__file__).resolve().parent
@@ -21,11 +21,16 @@ class DashboardHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         url = urlsplit(self.path)
         if url.path == "/api/tp-values/meta":
-            return self.send_json(metadata(load_tp_values(CSV_PATH)))
+            tp_frame = load_tp_values(CSV_PATH)
+            return self.send_json(district_metadata(load_district_data(DISTRICT_CSV_PATH), sorted(int(year) for year in tp_frame["Fiscal"].unique())))
         if url.path == "/api/tp-values":
             query = parse_qs(url.query)
-            filters = {key: query.get(key, [""])[0] for key in ("province", "district_id", "group")}
+            filters = {key: query.get(key, [""])[0] for key in ("province", "district_id", "group", "fiscal")}
             return self.send_json(summarize(load_tp_values(CSV_PATH), **filters))
+        if url.path == "/api/dashboard":
+            query = parse_qs(url.query)
+            filters = {key: query.get(key, [""])[0] for key in ("province", "district_id")}
+            return self.send_json(summarize_district_data(load_district_data(DISTRICT_CSV_PATH), **filters))
         return super().do_GET()
 
     def send_json(self, payload):
@@ -43,7 +48,7 @@ def main():
     args = parser.parse_args()
 
     with ThreadingHTTPServer(("127.0.0.1", args.port), DashboardHandler) as server:
-        print(f"Reading {CSV_PATH} directly with pandas")
+        print(f"Reading {DISTRICT_CSV_PATH} and {CSV_PATH} directly with pandas")
         print(f"Open http://127.0.0.1:{args.port}/")
         try:
             server.serve_forever()

@@ -54,7 +54,14 @@
         plugins: {
           legend: { display: false },
           tooltip: { callbacks: { label: context => ` TP value: ${numberFormat.format(context.raw)}` } },
-          datalabels: { display: false }
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            clamp: true,
+            color: '#64748b',
+            font: { size: 10.5, weight: '700' },
+            formatter: value => value ? compactFormat.format(value) : ''
+          }
         }
       }
     });

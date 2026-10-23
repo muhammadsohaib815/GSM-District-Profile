@@ -73,7 +73,6 @@
       panel: document.getElementById('filterPanel'), backdrop: document.getElementById('filterBackdrop'),
       mobileButton: document.getElementById('mobileFilterBtn')
     });
-
     els.provinceFilters.addEventListener('change', event => {
       if (!event.target.matches('input[type="radio"]')) return;
       state.selectedProvinces = event.target.value === '__all__'
