@@ -11,6 +11,9 @@ CSV_PATH = Path(__file__).resolve().parent / "data" / "GSM TP VALUES (2017-2026)
 DISTRICT_CSV_PATH = Path(__file__).resolve().parent / "data" / "District Data.csv"
 REQUIRED_COLUMNS = {"Province", "District_ID", "District", "Group", "Fiscal", "TP value total"}
 TEXT_COLUMNS = ["Province", "District_ID", "District", "Group"]
+PROGRAM_START_COLUMN = "FALAH 2007-2012 USAID Pop. Council USD 14.3m"
+PROGRAM_END_COLUMN = "RAF 2011-2013 CMW"
+PARTNER_ORDER = ("KFW", "LAD", "DFID", "GF", "BMGF", "USAID", "Packard", "PPIF", "Other")
 DISTRICT_FIELD_MAP = {
     "Est. Population 2026": "population",
     "MWRA 2026": "mwra",
@@ -97,6 +100,48 @@ def _numeric_series(series: pd.Series) -> pd.Series:
     return pd.to_numeric(cleaned, errors="coerce")
 
 
+def _programme_partner(column: str) -> str:
+    """Map a full programme column name to its short partner name."""
+    name = column.upper()
+    padded = f" {name} "
+    if "BMGF" in name:
+        return "BMGF"
+    if "USAID" in name:
+        return "USAID"
+    if "KFW" in name:
+        return "KFW"
+    if "DFID" in name or "DAFPAK" in name:
+        return "DFID"
+    if " GF " in padded:
+        return "GF"
+    if name.startswith("LAD "):
+        return "LAD"
+    if "PACKARD" in name:
+        return "Packard"
+    if "PPIF" in name:
+        return "PPIF"
+    return "Other"
+
+
+def _add_partner_flags(frame: pd.DataFrame) -> None:
+    """Create one 0/1 partner flag per district from programme indicators."""
+    columns = list(frame.columns)
+    if PROGRAM_START_COLUMN not in columns or PROGRAM_END_COLUMN not in columns:
+        for partner in PARTNER_ORDER:
+            frame[f"partner_{partner}"] = 0
+        return
+
+    start = columns.index(PROGRAM_START_COLUMN)
+    end = columns.index(PROGRAM_END_COLUMN) + 1
+    grouped = {partner: [] for partner in PARTNER_ORDER}
+    for column in columns[start:end]:
+        grouped[_programme_partner(column)].append(column)
+
+    for partner, source_columns in grouped.items():
+        values = frame[source_columns].apply(_numeric_series).fillna(0)
+        frame[f"partner_{partner}"] = values.sum(axis=1).gt(0).astype("Int64")
+
+
 def load_district_data(path: Path = DISTRICT_CSV_PATH) -> pd.DataFrame:
     """Load the wide district profile CSV and normalize its numeric fields."""
     frame = pd.read_csv(Path(path), encoding="utf-8-sig")
@@ -111,6 +156,7 @@ def load_district_data(path: Path = DISTRICT_CSV_PATH) -> pd.DataFrame:
     for source, target in DISTRICT_FIELD_MAP.items():
         if source in frame.columns:
             frame[target] = _numeric_series(frame[source])
+    _add_partner_flags(frame)
     if "mcpr" in frame:
         frame["mcpr"] = frame["mcpr"] / 100
     return frame
@@ -175,6 +221,10 @@ def summarize_district_data(frame: pd.DataFrame, *, province: str = "", district
     total_tp = _sum_metric(filtered, "totalTp")
     cadre_values = [_sum_metric(filtered, "hakeem"), _sum_metric(filtered, "nurse"), _sum_metric(filtered, "sitaraBaji"), _sum_metric(filtered, "sattarBhahi")]
     other_cadres = sum(value or 0 for value in cadre_values) if any(value is not None for value in cadre_values) else None
+    partners = {
+        partner: int(filtered[f"partner_{partner}"].fillna(0).sum() > 0)
+        for partner in PARTNER_ORDER
+    }
     return {
         "record_count": int(len(filtered)),
         "population": population,
@@ -211,6 +261,7 @@ def summarize_district_data(frame: pd.DataFrame, *, province: str = "", district
         "healthImpact": {"pregnanciesAverted": None, "maternalDeathsAverted": None, "childDeathsAverted": None, "abortionsAverted": None},
         "fpUsers": fp_users,
         "beneficiaries": beneficiaries,
+        "partners": partners,
         "avgSales": int(round(total_tp / 10)) if total_tp is not None else None,
         "totalFpUsers": _sum_metric(filtered, "totalFpUsers"),
         "condomUsers": fp_users["condom"],

@@ -6,6 +6,7 @@
     window.GSM_CHARTS.clear();
     window.GSM_MAP.update([]);
     document.getElementById('footerDistrictCount').textContent = 'Loading districts';
+    document.getElementById('partnerStripList').textContent = 'Loading partners';
     window.GSM_TP.update(state);
     window.GSM_DASHBOARD.update(state);
     const footerPartners = document.getElementById('footerPartners');

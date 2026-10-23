@@ -15,6 +15,26 @@
     });
   }
 
+  function setPartners(partners) {
+    const container = document.getElementById('partnerStripList');
+    const active = Object.entries(partners || {})
+      .filter(([, value]) => Number(value) === 1)
+      .map(([name]) => name);
+    container.replaceChildren();
+    if (!active.length) {
+      container.textContent = '-';
+      return;
+    }
+    active.forEach((name, index) => {
+      if (index) {
+        const separator = document.createElement('b');
+        separator.textContent = '|';
+        container.append(separator);
+      }
+      container.append(document.createTextNode(name));
+    });
+  }
+
   async function update(state) {
     const query = new URLSearchParams();
     if (state.selectedProvinces.size === 1) query.set('province', [...state.selectedProvinces][0]);
@@ -68,10 +88,12 @@
         tbPatients: data.tbPatients
       };
       Object.entries(summaries).forEach(([key, value]) => setValue(`[data-summary="${key}"]`, value));
+      setPartners(data.partners);
       window.GSM_CHARTS.update(data);
       document.getElementById('footerDistrictCount').textContent = `${data.record_count} district${data.record_count === 1 ? '' : 's'}`;
     } catch (error) {
       document.querySelectorAll('[data-kpi], [data-summary]').forEach(element => { element.textContent = '-'; });
+      document.getElementById('partnerStripList').textContent = '-';
     }
   }
 
